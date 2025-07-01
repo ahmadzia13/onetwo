@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Will Form Multiple Sections</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      margin-top: 40px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 8px;
+      min-width: 150px;
+    }
+
+    button {
+      padding: 8px 20px;
+      cursor: pointer;
+    }
+
+    .results div {
+      gap: 10px;
+      margin-bottom: 5px;
+      align-items: center;
+    }
+
+    .edit, .delete {
+      cursor: pointer;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+    }
+
+    .edit {
+      background-color: blue;
+    }
+
+    .delete {
+      background-color: red;
+    }
+    .results {
+        margin-bottom: 10px;
+        gap: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Section 1 -->
+  <div class="container">
+    <h2>Pecuniary legacies / gifts of money</h2>
+    <div id="results1" class="results"></div>
+    <div class="form-row">
+      <input type="text" id="amount1" placeholder="£Amount">
+      <input type="text" id="recipient1" placeholder="Recipient">
+      <input type="text" id="address1" placeholder="Address">
+    </div>
+    <button onclick="save(1)">SAVE</button>
+  </div>
+
+  <!-- Section 2 -->
+  <div class="container">
+    <h2>Specific items / objects / chattels</h2>
+    <div id="results2" class="results"></div>
+    <div class="form-row">
+      <input type="text" id="item2" placeholder="Item">
+      <input type="text" id="recipient2" placeholder="Recipient">
+      <input type="text" id="address2" placeholder="Address">
+    </div>
+    <button onclick="save(2)">SAVE</button>
+  </div>
+
+  <!-- Section 3 -->
+  <div class="container">
+    <h2>Animals / Pets</h2>
+    <div id="results3" class="results"></div>
+    <div class="form-row">
+      <input type="text" id="animal3" placeholder="Animal">
+      <input type="text" id="recipient3" placeholder="Recipient">
+      <input type="text" id="address3" placeholder="Address">
+    </div>
+    <button onclick="save(3)">SAVE</button>
+  </div>
+
+  <!-- Section 4 -->
+  <div class="container">
+    <h2>Property</h2>
+    <div id="results4" class="results"></div>
+    <div class="form-row">
+      <input type="text" id="property4" placeholder="Property Description">
+      <input type="text" id="recipient4" placeholder="Recipient">
+      <input type="text" id="address4" placeholder="Address">
+    </div>
+    <button onclick="save(4)">SAVE</button>
+  </div>
+
+  <!-- Section 5 -->
+  <div class="container">
+    <h2>Charitable Donations</h2>
+    <div id="results5" class="results"></div>
+    <div class="form-row">
+      <input type="text" id="charity5" placeholder="Name of Charity">
+      <input type="text" id="donation5" placeholder="Amount of Donation">
+    </div>
+    <button onclick="save(5)">SAVE</button>
+  </div>
+
+  <script>
+   function save(section) {
+  const resultsDiv = document.getElementById('results' + section);
+  let inputs = [];
+  let labels = [];
+
+  if(section === 1){
+    inputs = [
+      document.getElementById('amount1'),
+      document.getElementById('recipient1'),
+      document.getElementById('address1')
+    ];
+    labels = ["Amount", "Recipient", "Address"];
+  } else if(section === 2){
+    inputs = [
+      document.getElementById('item2'),
+      document.getElementById('recipient2'),
+      document.getElementById('address2')
+    ];
+    labels = ["Item", "Recipient", "Address"];
+  } else if(section === 3){
+    inputs = [
+      document.getElementById('animal3'),
+      document.getElementById('recipient3'),
+      document.getElementById('address3')
+    ];
+    labels = ["Animal", "Recipient", "Address"];
+  } else if(section === 4){
+    inputs = [
+      document.getElementById('property4'),
+      document.getElementById('recipient4'),
+      document.getElementById('address4')
+    ];
+    labels = ["Property", "Recipient", "Address"];
+  } else if(section === 5){
+    inputs = [
+      document.getElementById('charity5'),
+      document.getElementById('donation5')
+    ];
+    labels = ["Charity", "Donation"];
+  }
+
+  const values = inputs.map(input => input.value.trim());
+
+  // Prevent saving empty inputs
+  if(values.some(v => v === "")){
+    alert("Please fill in all fields before saving.");
+    return;
+  }
+
+  const entry = document.createElement('div');
+  entry.style.marginBottom = '10px';
+
+  // Build labels row
+  let labelsHTML = '<div style="display:flex; gap:10px; margin-bottom:3px;">';
+  labels.forEach(label => {
+    labelsHTML += `<div style="flex:1; font-weight:bold;">${label}</div>`;
+  });
+  labelsHTML += '</div>';
+
+  // Build values row
+  let valuesHTML = '<div style="display:flex; gap:10px; margin-bottom:5px;">';
+  values.forEach(value => {
+    valuesHTML += `<div style="flex:1;">${value}</div>`;
+  });
+  valuesHTML += '</div>';
+
+  // Final entry HTML
+  entry.innerHTML = `
+    ${labelsHTML}
+    ${valuesHTML}
+    <button class="edit">✎</button>
+    <button class="delete">✖</button>
+  `;
+
+  entry.querySelector('.delete').addEventListener('click', () => {
+    resultsDiv.removeChild(entry);
+  });
+
+  entry.querySelector('.edit').addEventListener('click', () => {
+    inputs.forEach((input, i) => input.value = values[i]);
+    resultsDiv.removeChild(entry);
+  });
+
+  resultsDiv.appendChild(entry);
+  inputs.forEach(input => input.value = '');
+}
+
+  </script>
+
+</body>
+</html>
