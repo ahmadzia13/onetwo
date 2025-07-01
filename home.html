@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inheritance Tax</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+
+
+    <style>
+      body {
+  font-family: Arial, sans-serif;
+  margin: 40px;
+  background: #f9f9f9;
+}
+
+.form-section {
+  background: white;
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+
+h2 {
+  color: #222;
+}
+
+p {
+  font-size: 14px;
+  color: #444;
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.save-btn {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background-color: #1b5e20;
+}
+
+.output {
+  margin-top: 20px;
+}
+
+.entry {
+  background: #fafafa;
+  border-left: 4px solid #3f51b5;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  position: relative;
+}
+
+.entry span {
+  display: block;
+  margin: 3px 0;
+}
+
+.entry .actions {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.entry .actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  margin-left: 8px;
+}
+
+.onebutton {
+  display: flex;
+  justify-content: flex-start;  /* <-- changed from flex-end to flex-start */
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid #ddd;
+}
+
+.onedelete, .twobutton {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.2s ease;
+  padding: 8px 15px;
+}
+
+.onedelete:hover {
+  background: red;
+  transform: scale(1.1);
+  border-radius: 5px;
+}
+
+.twobutton:hover {
+  background: #007acc;
+  transform: scale(1.1);
+  border-radius: 5px;
+}
+.result {
+    line-height: 1.1;
+}
+
+    </style>
+
+   
+
+
+
+
+  
+  <div class="form-section">
+    <h2>Inheritance Tax</h2>
+    <p>
+      The more precise the values of your assets you can provide us, the easier it will be to determine any inheritance tax liability on your estate.
+    </p>
+    <p>
+      Everyone’s estate can have potential Inheritance Tax liability. However, a certain portion is taxed at 0%. This is known as the Nil Rate Tax Band (NRT). It is also possible for a surviving spouse/partner (widow) to retain the NRT of the deceased spouse/partner. If we feel that your combined estates may be greater than the NRT, we will contact you to discuss the options available to you.
+    </p>
+
+    <!-- Moved output section here -->
+    <div class="output" id="outputArea">
+      <!-- Saved rows will appear here -->
+    </div>
+
+    <label for="asset">Asset</label>
+    <input type="text" id="asset" placeholder="">
+
+    <label for="description">Description</label>
+    <input  type="text" id="description" placeholder="">
+
+    <label for="valueSingle">Value (Single)</label>
+    <input  type="text" id="valueSingle" placeholder="">
+
+    <label for="valueJoint">Value (Joint)</label>
+    <input   type="text" id="valueJoint" placeholder="">
+
+    <button onclick="saveRow()" class="save-btn">Save and Add Row</button>
+  </div>
+
+  
+  
+
+
+ 
+
+
+
+
+
+  <script>
+    
+    function saveRow() {
+  const asset = document.getElementById('asset').value.trim();
+  const description = document.getElementById('description').value.trim();
+  const valueSingle = document.getElementById('valueSingle').value.trim();
+  const valueJoint = document.getElementById('valueJoint').value.trim();
+
+  if (!asset || !description || !valueSingle || !valueJoint) {
+    alert('Please fill out all fields.');
+    return;
+  }
+
+  const entry = document.createElement('div');
+  entry.className = 'entry';
+
+  entry.innerHTML = `
+  <div class="results">
+  <span><strong>Asset:</strong> ${asset}</span>
+  <span><strong>Description:</strong> ${description}</span>
+  <span><strong>Value (Single):</strong> ${valueSingle}</span>
+  <span><strong>Value (Joint):</strong> ${valueJoint}</span>
+   </div>
+  <div class="onebutton">
+    <button onclick="deleteRow(this)" class="onedelete">🗑️</button>
+    <button onclick="editRow(this)" class="twobutton">✏️</button>
+  </div>
+`;
+
+  document.getElementById('outputArea').appendChild(entry);
+
+  // Clear form fields
+  document.getElementById('asset').value = '';
+  document.getElementById('description').value = '';
+  document.getElementById('valueSingle').value = '';
+  document.getElementById('valueJoint').value = '';
+}
+
+function deleteRow(button) {
+  const entry = button.closest('.entry');
+  entry.remove();
+}
+
+function editRow(button) {
+  const entry = button.closest('.entry');
+  const spans = entry.querySelectorAll('span');
+
+  document.getElementById('asset').value = spans[0].innerText.replace('Asset:', '').trim();
+  document.getElementById('description').value = spans[1].innerText.replace('Description:', '').trim();
+  document.getElementById('valueSingle').value = spans[2].innerText.replace('Value (Single):', '').trim();
+  document.getElementById('valueJoint').value = spans[3].innerText.replace('Value (Joint):', '').trim();
+
+  entry.remove(); // Remove the old entry to update after editing
+}
+
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>
