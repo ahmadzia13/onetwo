@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+
+
+    <script>
+
+const customFields = [
+    {
+        id: "abc1",
+        name: "Are you enquiring for an individual person or two people?",
+        fieldKey: "contact.are_you_enquiring_for_an_individual_person_or_two_people",
+        dataType: "RADIO",
+    },
+    {
+        id: "abc2",
+        name: "Marital Status",
+        fieldKey: "contact.marital_status",
+        dataType: "MULTIPLE_OPTIONS",
+    },
+    {
+        id: "abc3",
+        name: "Spiderman",
+        fieldKey: "contact.are_you_two_people",
+        dataType: "TV",
+    },
+    {
+        id: "abc4",
+        name: "Individual person or two people?",
+        fieldKey: "contact.are_you_individual_person_or_two_people",
+        dataType: "REMOTE",
+    },
+    {
+        id: "abc5",
+        name: "Are you",
+        fieldKey: "contact.dtaet",
+        dataType: "FAN",
+    },
+    {
+        id: "abc6",
+        name: "Residual Estate At first instance, share to go to issue?",
+        fieldKey: "contact.residual_estate_at_first_instance_share_to_go_to_issue",
+        dataType: "RADIO",
+    },
+    {
+        id: "abc7",
+        name: "Additional Details",
+        fieldKey: "contact.additional_details", 
+        dataType: "LARGE_TEXT",
+    },
+    {
+        id: "abc8",
+        name: "Residual Estate How is your estate going to be distributed?",
+        fieldKey: "contact.residual_estate_how_is_your_estate_going_to_be_distributed",
+        dataType: "RADIO",
+    },
+];
+
+function getFieldById(customFieldsId) {
+    const field = customFields.find(f => f.id === customFieldsId);
+    
+    if (!field) {
+        return null; 
+    }
+    
+    return {
+        name: field.name,
+        fieldKey: field.fieldKey,
+        dataType: field.dataType
+    };
+}
+
+// Example usage
+console.log(getFieldById("abc2"));
+console.log(getFieldById("abc5")); 
+
+
+    </script>
+
+
+
+
+</body>
+
+</html>
