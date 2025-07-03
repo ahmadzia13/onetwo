@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #102C3D;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #102C3D;
+        }
+        .save-btn {
+            margin-top: 25px;
+            padding: 15px 30px;
+            background-color: #102C3D;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        .save-btn:hover {
+            background-color: #D3FE01;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .output {
+            margin-top: 30px;
+        }
+        .section-title {
+            color: #102C3D;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #D3FE01;
+            padding-bottom: 10px;
+        }
+        .entry {
+            background: white;
+            border-left: 5px solid #102C3D;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .entry span {
+            display: block;
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+        .entry strong {
+            color: #102C3D;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: flex-start;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        .delete-btn, .edit-btn {
+            background: none;
+            border: 2px solid transparent;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .delete-btn {
+            color: #DC3545;
+        }
+        .delete-btn:hover {
+            background-color: #DC3545;
+            color: white;
+            transform: scale(1.1);
+        }
+        .edit-btn {
+            color: #007BFF;
+        }
+        .edit-btn:hover {
+            background-color: #007BFF;
+            color: white;
+            transform: scale(1.1);
+        }
+        .results {
+            line-height: 1.8;
+        }
+        .total-section {
+            background: #102C3D;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .total-section h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.3em;
+        }
+        .total-percentage {
+            font-size: 2em;
+            font-weight: bold;
+            color: #D3FE01;
+        }
+        .warning {
+            color: #DC3545;
+            font-weight: bold;
+        }
+        .success {
+            color: #28A745;
+            font-weight: bold;
+        }
+    </style>
+    <div class="form-container">
+        <h1>Estate Planning - Beneficiary Management</h1>
+        <label for="name">Beneficiary Name</label>
+        <input type="text" id="name" placeholder="Enter beneficiary's full name">
+        <label for="relationship">Relationship</label>
+        <input type="text" id="relationship" placeholder="e.g., Spouse, Child, Sibling, Friend">
+        <label for="address">Address</label>
+        <input type="text" id="address" placeholder="Enter full address">
+        <label for="percentage">Share of Estate (%)</label>
+        <input type="number" id="percentage" placeholder="Enter percentage (1-100)" min="1" max="100">
+        <button onclick="saveRow()" class="save-btn">Save and Add Beneficiary</button>
+    </div>
+    <div class="output" id="outputArea">
+        <h2 class="section-title">Beneficiaries</h2>
+        <div id="beneficiaryList">
+            <!-- Saved entries will appear here -->
+        </div>
+        <div class="total-section" id="totalSection" style="display: none;">
+            <h3>Total Estate Distribution</h3>
+            <div class="total-percentage" id="totalPercentage">0%</div>
+            <div id="statusMessage"></div>
+        </div>
+    </div>
+    <script>
+    function saveRow() {
+        const name = document.getElementById('name').value.trim();
+        const relationship = document.getElementById('relationship').value.trim();
+        const address = document.getElementById('address').value.trim();
+        const percentageStr = document.getElementById('percentage').value.trim();
+        const percentage = parseFloat(percentageStr);
+        // Validate inputs
+        if (!name || !relationship || !address || isNaN(percentageStr)) {
+            return;
+        }
+        if (isNaN(percentage) || percentage < 1 || percentage > 100) {
+            alert('Percentage must be a number between 1 and 100.');
+            return;
+        }
+        // Create the new entry
+        const entry = document.createElement('div');
+        entry.className = 'entry';
+        entry.innerHTML = `
+            <div class="results">
+                <span><strong>Name:</strong> ${name}</span>
+                <span><strong>Relationship:</strong> ${relationship}</span>
+                <span><strong>Address:</strong> ${address}</span>
+                <span><strong>Share of Estate:</strong> ${percentage}%</span>
+            </div>
+            <div class="action-buttons">
+                <button onclick="deleteRow(this)" class="delete-btn">:wastebasket: Delete</button>
+                <button onclick="editRow(this)" class="edit-btn">:pencil2: Edit</button>
+            </div>
+        `;
+        // Append to the list
+        const list = document.getElementById('beneficiaryList');
+        list.appendChild(entry);
+        // Clear inputs
+        document.getElementById('name').value = '';
+        document.getElementById('relationship').value = '';
+        document.getElementById('address').value = '';
+        document.getElementById('percentage').value = '';
+        updateTotal();
+    }
+    function deleteRow(button) {
+        const entry = button.closest('.entry');
+        if (entry) {
+            entry.remove();
+            updateTotal();
+        }
+    }
+    function editRow(button) {
+        const entry = button.closest('.entry');
+        const spans = entry.querySelectorAll('span');
+        document.getElementById('name').value = spans[0].textContent.replace('Name:', '').trim();
+        document.getElementById('relationship').value = spans[1].textContent.replace('Relationship:', '').trim();
+        document.getElementById('address').value = spans[2].textContent.replace('Address:', '').trim();
+        document.getElementById('percentage').value = spans[3].textContent.replace('Share of Estate:', '').replace('%', '').trim();
+        entry.remove();
+        updateTotal();
+    }
+    function updateTotal() {
+        const entries = document.querySelectorAll('.entry');
+        let total = 0;
+        entries.forEach(entry => {
+            const percentageText = entry.querySelector('span:last-child').textContent;
+            const percentage = parseFloat(percentageText.replace('Share of Estate:', '').replace('%', '').trim()) || 0;
+            total += percentage;
+        });
+        const totalSection = document.getElementById('totalSection');
+        const totalPercentage = document.getElementById('totalPercentage');
+        const statusMessage = document.getElementById('statusMessage');
+        if (entries.length > 0) {
+            totalSection.style.display = 'block';
+            totalPercentage.textContent = total.toFixed(1) + '%';
+            if (total === 100) {
+                statusMessage.innerHTML = '<span class="success">✓ Estate fully allocated</span>';
+            } else if (total > 100) {
+                statusMessage.innerHTML = `<span class="warning">:warning: Over-allocated by ${(total - 100).toFixed(1)}%</span>`;
+            } else {
+                statusMessage.innerHTML = `<span class="warning">:warning: Under-allocated by ${(100 - total).toFixed(1)}%</span>`;
+            }
+        } else {
+            totalSection.style.display = 'none';
+        }
+    }
+</script>
+</body>
+</html>
